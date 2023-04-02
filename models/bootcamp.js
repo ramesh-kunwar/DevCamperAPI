@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const slugify = require("slugify")
+const course = require("./course")
 
 const bootcampSchema = new mongoose.Schema({
   name: {
@@ -99,6 +100,19 @@ const bootcampSchema = new mongoose.Schema({
   },
 
 
+}, {
+  toJSON: { virtuals: true }, // Enable virtuals for JSON output
+  toObject: { virtuals: true }, // Enable virtuals for object output
+})
+
+// reverse populate
+bootcampSchema.virtual("courses",{
+
+
+  ref: "Course",
+  localField: "_id",
+  foreignField: "bootcamp",
+  justOne: false
 })
 
 // create bootcamp slug from the name
@@ -107,5 +121,7 @@ bootcampSchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true, })
   next()
 })
+
+
 
 module.exports = mongoose.model("Bootcamp", bootcampSchema)

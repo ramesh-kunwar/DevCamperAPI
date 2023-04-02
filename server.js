@@ -7,6 +7,7 @@ const connectDB = require("./config/db")
 
 // route import
 const bootcampsRoutes = require("./routes/bootcamps")
+const coursesRoutes = require("./routes/courses")
 
 // custom middleware import
 const errorHandler = require("./middleware/err")
@@ -20,6 +21,7 @@ app.use(express.json())
 
 // Mount rouers
 app.use("/api/v1", bootcampsRoutes)
+app.use("/api/v1", coursesRoutes)
 
 
 // error Handler Middleware

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-
+const Bootcamp = require("./bootcamp")
 const courseSchema = new mongoose.Schema({
     title: {
         type: String,
