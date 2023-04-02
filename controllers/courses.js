@@ -70,25 +70,24 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
 
 
 /**********************************
- *  @desc Create courses
- *  @route POST / api/v1/courses/:id
+ *  @desc Add courses
+ *  @route POST / api/v1/bootcamps/:bootcampId/courses
  *  @access public
  **********************************/
 
-exports.createCourses = asyncHandler(async (req, res) => {
+exports.addCourses = asyncHandler(async (req, res, next) => {
+    // get bootcamp id
+    req.body.bootcamp = req.params.bootcampId;
 
-    const courses = await Course.create(req.body)
+    const bootcamp = await Bootcamp.findById(req.params.bootcampId)
 
-    if (!courses) {
-        res.status(400).json({
-            success: false,
-        })
-
-
+    if (!bootcamp) {
+        next(new ErrorResponse("Courses not found", 404))
     }
+    const course = await (await Course.create(req.body)).populate("bootcamp")
     res.status(201).json({
         success: true,
-        data: courses
+        data: course
     })
 
 })
