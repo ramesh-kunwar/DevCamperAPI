@@ -1,4 +1,5 @@
-
+const ErrorResponse = require("../utils/errorResponse")
+const asyncHandler = require("../middleware/async")
 const Bootcamp = require("../models/bootcamp")
 
 /**********************************
@@ -7,15 +8,15 @@ const Bootcamp = require("../models/bootcamp")
  *  @access public
  **********************************/
 
-exports.getBootcamps = async (req, res) => {
-    try {
-        const bootcamps = await Bootcamp.find()
-        res.status(200).json({ success: true, data: bootcamps })
+exports.getBootcamps = asyncHandler(async (req, res, next) => {
 
-    } catch (error) {
-        res.json({ success: false, error: error })
+    const bootcamps = await Bootcamp.find()
+    if (!bootcamps) {
+        next(new ErrorResponse(`Bootcamp not found`, 404))
     }
-}
+    res.status(200).json({ success: true, data: bootcamps })
+
+})
 
 /**********************************
  *  @desc Create bootcamp
@@ -23,25 +24,23 @@ exports.getBootcamps = async (req, res) => {
  *  @access public
  **********************************/
 
-exports.createBootcamp = async (req, res) => {
-    try {
-        const bootcamp = await Bootcamp.create(req.body)
+exports.createBootcamp = asyncHandler(async (req, res) => {
 
-        if (!bootcamp) {
-            res.status(400).json({
-                success: false,
-            })
-        }
-        res.status(201).json({
-            success: true,
-            data: bootcamp
-        })
-    } catch (error) {
+    const bootcamp = await Bootcamp.create(req.body)
+
+    if (!bootcamp) {
         res.status(400).json({
-            success: false
+            success: false,
         })
+
+
     }
-}
+    res.status(201).json({
+        success: true,
+        data: bootcamp
+    })
+
+})
 
 /**********************************
  *  @desc  Get single Bootcamp
@@ -49,19 +48,21 @@ exports.createBootcamp = async (req, res) => {
  *  @access public
  **********************************/
 
-exports.getBootcamp = async (req, res) => {
-    try {
-        const bootcamp = await Bootcamp.findById(req.params.id)
-        res.status(200).json({
-            success: true,
-            data: bootcamp
-        })
-    } catch (error) {
-        res.status(400).json({
-            success: false
-        })
+exports.getBootcamp = asyncHandler(async (req, res, next) => {
+
+    const bootcamp = await Bootcamp.findById(req.params.id)
+
+    if (!bootcamp) {
+        next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404))
     }
-}
+
+    res.status(200).json({
+        success: true,
+        data: bootcamp
+    })
+
+
+})
 
 /**********************************
  *  @desc  Update Bootcamp
@@ -69,30 +70,27 @@ exports.getBootcamp = async (req, res) => {
  *  @access private
  **********************************/
 
-exports.updateBootcamp = async (req, res) => {
-    try {
-        const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-            new: true, // when we get response the data should be updated
-            runValidators: true,
+exports.updateBootcamp = asyncHandler(async (req, res) => {
 
-        })
+    const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+        new: true, // when we get response the data should be updated
+        runValidators: true,
 
-        if (!bootcamp) {
-            res.status(400).json({
-                success: false
-            })
-        }
+    })
 
-        res.status(200).json({
-            success: true,
-            data: bootcamp
-        })
-    } catch (error) {
+    if (!bootcamp) {
         res.status(400).json({
             success: false
         })
+
     }
-}
+
+    res.status(200).json({
+        success: true,
+        data: bootcamp
+    })
+
+})
 
 
 /**********************************
@@ -101,23 +99,19 @@ exports.updateBootcamp = async (req, res) => {
  *  @access private
  **********************************/
 
-exports.deleteBootcamp = async (req, res) => {
-    try {
-        const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id)
+exports.deleteBootcamp = asyncHandler(async (req, res) => {
 
-        if (!bootcamp) {
-            res.status(400).json({
-                success: false
-            })
-        }
+    const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id)
 
-        res.status(200).json({
-            success: true,
-            data: bootcamp
-        })
-    } catch (error) {
+    if (!bootcamp) {
         res.status(400).json({
             success: false
         })
     }
-}
+
+    res.status(200).json({
+        success: true,
+        data: bootcamp
+    })
+
+})
