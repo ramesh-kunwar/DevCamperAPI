@@ -106,7 +106,7 @@ const bootcampSchema = new mongoose.Schema({
 })
 
 // reverse populate
-bootcampSchema.virtual("courses",{
+bootcampSchema.virtual("courses", {
 
 
   ref: "Course",
@@ -114,6 +114,27 @@ bootcampSchema.virtual("courses",{
   foreignField: "bootcamp",
   justOne: false
 })
+
+// cascade delete course when bootcamp is deleted
+// bootcampSchema.pre("remove", async function (next) {
+//   console.log(`"courses being removed from bootcamp ${this._id}"`);
+//   await this.model("Course").deleteMany({ bootcamp: this._id })
+//   next()
+// })
+
+bootcampSchema.pre('delete', async function (next) {
+  console.log("ran delete mid");
+
+  // Remove all children associated with the parent being removed
+  // console.log(`courses being removed from bootcamp ${this._id}`);
+
+
+  await mongoose.model('Course').deleteMany({ bootcamp: this._id });
+  next();
+
+});
+
+
 
 // create bootcamp slug from the name
 bootcampSchema.pre("save", function (next) {

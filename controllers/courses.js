@@ -91,3 +91,20 @@ exports.addCourses = asyncHandler(async (req, res, next) => {
     })
 
 })
+
+exports.updateCourse = asyncHandler(async (req, res, next) => {
+    const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    return res.status(201).json({
+        success: true,
+        data: course
+    })
+
+})
+exports.deleteCourse = asyncHandler(async (req, res, next) => {
+    const course = await Course.findByIdAndDelete(req.params.id);
+    return res.status(201).json({
+        success: true,
+        data: course
+    })
+
+})
