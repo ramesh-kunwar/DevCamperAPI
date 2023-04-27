@@ -6,7 +6,7 @@ const morgan = require("morgan")
 const connectDB = require("./config/db")
 
 // route import
-
+const bootcamps = require('./routes/bootcamps')
 
 // custom middleware import
 const errorHandler = require("./middleware/err")
@@ -15,10 +15,15 @@ const errorHandler = require("./middleware/err")
 connectDB()
 const app = express()
 
+// dev logging middleware
+app.use(morgan('dev'))
+
+
 // middleware
 app.use(express.json())
 
 // Mount rouers
+app.use("/api/v1/bootcamps", bootcamps)
 
 
 app.get("/", (req, res) => {
