@@ -2,6 +2,7 @@ const express = require("express")
 const dotenv = require("dotenv")
 dotenv.config({ path: "./config/config.env" })
 const morgan = require("morgan")
+const fileUpload = require("express-fileupload")
 
 const connectDB = require("./config/db")
 
@@ -22,6 +23,9 @@ app.use(morgan('dev'))
 
 // middleware
 app.use(express.json())
+
+// File Upload
+app.use(fileUpload())
 
 // Mount rouers
 app.use("/api/v1/bootcamps", bootcamps)
