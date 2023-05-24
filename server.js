@@ -3,10 +3,15 @@ const express = require("express");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
 
+
+
 // connect to db
 connectDB()
 
 const app = express()
+
+app.use(express.json())
+
 
 // Dev logging middleware
 app.use(morgan('tiny'))

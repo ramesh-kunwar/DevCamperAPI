@@ -1,4 +1,9 @@
 
+const asyncHandler = require('express-async-handler')
+
+const Bootcamp = require("../models/bootcamp")
+
+
 /*******************************************
  * @desc Get all bootcamps
  * @route GET /api/v1/bootcamps 
@@ -11,6 +16,7 @@ exports.getBootcamps = (req, res) => {
         success: true,
         msg: 'All bootcamp '
     })
+
 }
 
 /*******************************************
@@ -33,12 +39,15 @@ exports.getBootcamp = (req, res) => {
  * @access Private
  *******************************************/
 
-exports.createBootcamp = (req, res) => {
+exports.createBootcamp = asyncHandler(async (req, res) => {
+
+    const bootcamp = await Bootcamp.create(req.body)
+
     res.status(200).json({
         success: true,
-        msg: 'Bootcamp Created '
+        data: bootcamp,
     })
-}
+})
 
 
 /*******************************************
