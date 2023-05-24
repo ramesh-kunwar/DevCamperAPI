@@ -11,13 +11,17 @@ const Bootcamp = require("../models/bootcamp")
  *******************************************/
 
 
-exports.getBootcamps = (req, res) => {
+exports.getBootcamps = asyncHandler(async (req, res) => {
+
+    const bootcamps = await Bootcamp.find();
+
     res.status(200).json({
         success: true,
-        msg: 'All bootcamp '
+        count: bootcamps.length,
+        data: bootcamps
     })
 
-}
+})
 
 /*******************************************
  * @desc Get single bootcamp
@@ -25,12 +29,21 @@ exports.getBootcamps = (req, res) => {
  * @access Public
  *******************************************/
 
-exports.getBootcamp = (req, res) => {
+exports.getBootcamp = asyncHandler(async (req, res) => {
+    const bootcamp = await Bootcamp.findById(req.params.id)
+
+    if (!bootcamp) {
+        res.status(400).json({
+            success: false,
+            msg: `No bootcamp found with id : ${req.params.id}`
+        })
+    }
+
     res.status(200).json({
         success: true,
-        msg: 'Single bootcamp '
+        data: bootcamp
     })
-}
+})
 
 
 /*******************************************
@@ -56,12 +69,23 @@ exports.createBootcamp = asyncHandler(async (req, res) => {
  * @access Private
  *******************************************/
 
-exports.updateBootcamp = (req, res) => {
+exports.updateBootcamp = asyncHandler(async (req, res) => {
+    const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+    })
+
+    if (!bootcamp) {
+        res.status(400).json({
+            success: false,
+            msg: `No data found with id ${req.params.id}`
+        })
+    }
     res.status(200).json({
         success: true,
-        msg: 'Bootcamp Updated '
+        data: bootcamp
     })
-}
+})
 
 
 /*******************************************
@@ -70,10 +94,11 @@ exports.updateBootcamp = (req, res) => {
  * @access Private
  *******************************************/
 
-exports.deleteBootcamp = (req, res) => {
+exports.deleteBootcamp = asyncHandler(async (req, res) => {
+    const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id)
     res.status(200).json({
         success: true,
-        msg: 'Bootcamp Deleted '
+        data: bootcamp
     })
-}
+})
 
