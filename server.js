@@ -20,6 +20,7 @@ app.use(morgan('tiny'))
 
 // Importing All Routes
 const bootcamps = require("./routes/bootcampRoutes");
+const errorHander = require("./middleware/error");
 
 
 
@@ -39,6 +40,8 @@ app.use("/api/v1/bootcamps", bootcamps)
 
 
 
+// error handler middleware
+app.use(errorHander)
 
 
 // listening to the port

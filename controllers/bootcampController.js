@@ -1,7 +1,9 @@
 
 const asyncHandler = require('express-async-handler')
 
-const Bootcamp = require("../models/bootcamp")
+const Bootcamp = require("../models/bootcamp");
+const ErrorResponse = require('../utils/errorResponse');
+const errorHander = require('../middleware/error');
 
 
 /*******************************************
@@ -29,14 +31,13 @@ exports.getBootcamps = asyncHandler(async (req, res) => {
  * @access Public
  *******************************************/
 
-exports.getBootcamp = asyncHandler(async (req, res) => {
+exports.getBootcamp = asyncHandler(async (req, res, next) => {
+
     const bootcamp = await Bootcamp.findById(req.params.id)
 
+
     if (!bootcamp) {
-        res.status(400).json({
-            success: false,
-            msg: `No bootcamp found with id : ${req.params.id}`
-        })
+        return next(new errorHander(`No bootcamp found with id : ${req.params.id}`, 404))
     }
 
     res.status(200).json({
@@ -69,18 +70,18 @@ exports.createBootcamp = asyncHandler(async (req, res) => {
  * @access Private
  *******************************************/
 
-exports.updateBootcamp = asyncHandler(async (req, res) => {
-    const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+exports.updateBootcamp = asyncHandler(async (req, res, next) => {
+    const id = req.params.id;
+    if (!id) {
+        return next(new ErrorResponse(`Bootcamp not found with the id: ${id}`, 404))
+    }
+
+    const bootcamp = await Bootcamp.findByIdAndUpdate(id, req.body, {
         new: true,
         runValidators: true
     })
 
-    if (!bootcamp) {
-        res.status(400).json({
-            success: false,
-            msg: `No data found with id ${req.params.id}`
-        })
-    }
+
     res.status(200).json({
         success: true,
         data: bootcamp
@@ -94,8 +95,12 @@ exports.updateBootcamp = asyncHandler(async (req, res) => {
  * @access Private
  *******************************************/
 
-exports.deleteBootcamp = asyncHandler(async (req, res) => {
+exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id)
+
+    if (!bootcamp) {
+        return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404))
+    }
     res.status(200).json({
         success: true,
         data: bootcamp
