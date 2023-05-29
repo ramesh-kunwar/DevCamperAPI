@@ -2,6 +2,7 @@ require("dotenv").config({ path: "./config/config.env" });
 const express = require("express");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
+const fileupload = require("express-fileupload")
 
 // connect to db
 connectDB();
@@ -12,6 +13,8 @@ app.use(express.json());
 
 // Dev logging middleware
 app.use(morgan("tiny"));
+
+app.use(fileupload())
 
 // Importing All Routes
 const bootcamps = require("./routes/bootcampRoutes");
