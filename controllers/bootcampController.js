@@ -21,16 +21,12 @@ exports.getBootcamps = asyncHandler(async (req, res) => {
 
   // Loop over removeFields and delete them from reqQuery
 
-  console.log(req.query, "req query ");
-
   removeFields.forEach((param) => {
-    console.log(req.query[param]);
-    console.log(param, "param");
     delete reqQuery[param];
   });
 
   let queryStr = JSON.stringify(reqQuery);
-
+ 
   // here we are adding $ in gt | gte | lte...
   queryStr = queryStr.replace(
     /\b(gt|gte|lt|lte|in)\b/g,

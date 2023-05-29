@@ -3,6 +3,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
 const fileupload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 
 // connect to db
 connectDB();
@@ -10,6 +11,7 @@ connectDB();
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 // Dev logging middleware
 app.use(morgan("tiny"));
