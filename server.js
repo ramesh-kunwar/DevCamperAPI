@@ -2,7 +2,7 @@ require("dotenv").config({ path: "./config/config.env" });
 const express = require("express");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
-const fileupload = require("express-fileupload")
+const fileupload = require("express-fileupload");
 
 // connect to db
 connectDB();
@@ -14,11 +14,12 @@ app.use(express.json());
 // Dev logging middleware
 app.use(morgan("tiny"));
 
-app.use(fileupload())
+app.use(fileupload());
 
 // Importing All Routes
 const bootcamps = require("./routes/bootcampRoutes");
 const courses = require("./routes/coursesRoutes");
+const auth = require("./routes/authRoutes");
 const errorHander = require("./middleware/error");
 
 // initial route
@@ -33,6 +34,7 @@ app.get("/", (req, res) => {
 // mounting routers to specific url
 app.use("/api/v1/bootcamps", bootcamps);
 app.use("/api/v1/courses", courses);
+app.use("/api/v1/auth", auth);
 
 // error handler middleware
 app.use(errorHander);
